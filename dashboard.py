@@ -11,7 +11,7 @@ import dash
 import datetime
 import io
 import base64
-
+import streamlit as st
 # ----------------- GLOBAL DATA -----------------
 columns = ['timestamp', 'src_ip', 'dst_ip', 'protocol', 'length']
 df = pd.DataFrame(columns=columns)
