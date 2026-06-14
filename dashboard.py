@@ -1,13 +1,9 @@
-# final_network_dashboard.py
 
 import pandas as pd
 from scapy.all import sniff
 from threading import Thread
-from dash import Dash, html, dcc, Input, Output, State, ALL
 import plotly.express as px
 import plotly.graph_objects as go
-import dash_bootstrap_components as dbc
-import dash
 import datetime
 import io
 import base64
@@ -33,7 +29,6 @@ thread = Thread(target=capture_packets, daemon=True)
 thread.start()
 
 # ----------------- APP SETUP -----------------
-app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 app.title = "Pro Live Network Analyzer"
 server = app.server
 
@@ -53,9 +48,6 @@ features_list = [
      "desc": "Export captured packets and metrics for offline analysis."},
 ]
 
-# ----------------- DASHBOARD PAGE -----------------
-dashboard_layout = html.Div([
-    html.H1("Live Network Analyzer Dashboard",
             style={'textAlign':'center','marginBottom':'30px','fontFamily':'Montserrat'}),
 
     # KPI Cards
@@ -89,7 +81,6 @@ dashboard_layout = html.Div([
 
 # ----------------- FEATURE DETAIL PAGE -----------------
 features_layout = html.Div([
-    html.H1("Dashboard Features", style={'textAlign':'center','marginBottom':'20px','fontFamily':'Montserrat'}),
 
     dbc.Row([
         # Left panel: feature buttons
@@ -112,7 +103,6 @@ features_layout = html.Div([
             ])
         ], width=4),
 
-        # Right panel: feature mini-dashboard
         dbc.Col([
             html.Div(id='feature-detail', style={
                 'backgroundColor':'#1a1a2e',
@@ -152,7 +142,6 @@ prediction_layout = html.Div([
 # ----------------- NAVIGATION -----------------
 navbar = dbc.NavbarSimple(
     children=[
-        dbc.NavItem(dbc.NavLink("Dashboard", href="/", id='nav-dashboard')),
         dbc.NavItem(dbc.NavLink("Features Info", href="/features", id='nav-features')),
         dbc.NavItem(dbc.NavLink("Predictions & Alerts", href="/prediction", id='nav-prediction'))
     ],
@@ -179,7 +168,6 @@ def display_page(pathname):
     elif pathname == '/prediction':
         return prediction_layout
     else:
-        return dashboard_layout
 
 # ----------------- HELPER FUNCTION -----------------
 def get_geo(ip):
@@ -188,7 +176,6 @@ def get_geo(ip):
     import random
     return random.uniform(-60, 60), random.uniform(-180, 180)
 
-# ----------------- LIVE DASHBOARD CALLBACK -----------------
 @app.callback(
     Output('kpi-src','children'),
     Output('kpi-dst','children'),
@@ -201,7 +188,6 @@ def get_geo(ip):
     Output('graph-geo','figure'),
     Input('interval-update','n_intervals')
 )
-def update_dashboard(n):
     global df
     dff = df.copy()
 
@@ -302,7 +288,6 @@ def update_dashboard(n):
     State({'type':'feature-card','index':ALL}, 'id')
 )
 def display_feature_detail(n_clicks, ids):
-    ctx = dash.callback_context
     if not ctx.triggered or all(click is None for click in n_clicks):
         return html.Div("Click a feature on the left to see details", style={'fontSize':'18px','color':'#bbb'})
 
