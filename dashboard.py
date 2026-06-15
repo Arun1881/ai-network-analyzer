@@ -11,6 +11,7 @@ import dash
 import datetime
 import io
 import base64
+import os
 
 # ----------------- GLOBAL DATA -----------------
 columns = ['timestamp', 'src_ip', 'dst_ip', 'protocol', 'length']
@@ -435,4 +436,5 @@ def update_prediction_page(n):
 
 # ----------------- RUN APP -----------------
 if __name__ == "__main__":
-    app.run(debug=False, port=8050)
+    port = int(os.environ.get("PORT", 8050))
+    app.run(debug=False, host="0.0.0.0", port=port)
